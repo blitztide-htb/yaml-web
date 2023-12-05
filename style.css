@@ -195,6 +195,13 @@ button:hover {
     padding: 5px;
 }
 
+.question_head a:hover {
+    float: right;
+    padding: 5px;
+    font-weight: bold;
+    color: var(--alert);
+}
+
 .header {
     border: 3px solid var(--dark);
 }
