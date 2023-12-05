@@ -3,6 +3,7 @@
  <head>
   <title> HTB YAML | Main </title>
   <link rel="stylesheet" href="style.css">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
   <script src="yaml.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.js" integrity="sha512-CwxrLIN0dww6lRc/oKeZiI9oGlOob2HPMU0Yu0g+P3/G1cuTii+tt0jpyEKhilfrV7D/zmvKiVPIHUDU6xbBxg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
  </head>
@@ -17,7 +18,6 @@
   <div class="buttinz">
     <button onclick="uploadYAML()" width="100%">Load from File</button>
     <button onclick="loadYAML()">Load from URL</button>
-    <button onclick="openYAML()">Open Selected</button>
     <button onclick="newYAML()">New YAML</button>
   </div>
  </div>
@@ -37,9 +37,9 @@
     <button onclick="downloadYAML()"> Download </button>
     <button onclick="clearYAML()"> Clear </button>
     <button onclick="undo()"> Undo </button>
-    <button onclick="redo()"> Redo </button>
+    <button onclick="redo()" disabled> Redo </button>
+    <button onclick="validate()"> Validate </button>
     <button onclick="openMenu()"> Exit </button>
-    <button onclick="debugprint()"> DEBUG </button>
  </div>
  </body>
 </html>

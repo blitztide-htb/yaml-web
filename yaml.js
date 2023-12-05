@@ -4,9 +4,21 @@ var old_yaml = {};
 var content_mode = "s";
 var max_question = 1;
 var filename = "unsaved";
+var old_name = "";
 var program_name = "HTB YAML | "
 const EMPTY_YAML = `{"scenario":"scenario","description":"description","questions":[]}`;
 var files = [];
+var validate = validateSherlock; // Set to sherlock by default
+
+function validateSherlock() {
+    console.log("Validating Sherlock");
+
+}
+
+function validateGuided() {
+    console.log("Validating Guided");
+
+}
 
 
 function debugprint() {
@@ -33,7 +45,7 @@ function DoYaml() {
         node.innerHTML = `
         <div class="fileitem">
             <b onclick="openFile(this)">${item}</b>
-            <a onclick="deleteFile(this)">[x]</a>
+            <a onclick="deleteFile(this)">🗑️</a>
         </div>`;
         file_container.appendChild(node);
     });
@@ -85,19 +97,23 @@ function generateQuestion(input_object) {
     question_number = input_object["number"] ? input_object["number"] : max_question;
     node = document.createElement("div");
     node.innerHTML = `
-        <i>${question_number}</i><a onclick="deleteQuestion(this)">[x]</a>
+        <div class="question_head">
+            <p>${question_number}</p><a onclick="deleteQuestion(this)">🗑️</a>
+        </div>
+        <div class="question_body">
         <input name = "questions[${question_number}][number]" type="hidden" value="${question_number}"></input>
-        <label>Question</label>
-        <label>Title</label>
+        <label>Title:</label>
         <input name = "questions[${question_number}][title]" value="${input_object["title"] ? input_object["title"] : ""}" onChange="updateYAML()"></input>
-        <label>Flag</label>
+        <label>Flag:</label>
         <input name = "questions[${question_number}][flag]" value="${input_object["flag"] ? input_object["flag"] : ""}" onChange="updateYAML()"></input>
-        <label>Placeholder</label>
+        <label>Placeholder:</label>
         <input name = "questions[${question_number}][placeholder]" value="${input_object["placeholder"] ? input_object["placeholder"] : ""}" onChange="updateYAML()"></input>
-        <label>Case Sensitive</label>
-        <input name="questions[${question_number}][is_case_sensitive]" type="checkbox" value="true" onChange="updateYAML()"></input>
-        <label>Depends On</label>
-        <input name="questions[${question_number}][depends_on]" onChange="updateYAML()"></input>`;
+        <div>
+            <label>Case Sensitive:</label>
+            <input name="questions[${question_number}][is_case_sensitive]" type="checkbox" value="true" onChange="updateYAML()"></input>
+            <label>Depends On:</label>
+            <input name="questions[${question_number}][depends_on]" onChange="updateYAML()"></input>
+        </div></div>`;
     node.classList.add("question");
     return node;
 }
@@ -106,6 +122,7 @@ function clearYAML() {
     document.getElementById("sherlock").innerHTML = "";
     yaml_history.push(current_yaml);
     current_yaml = JSON.parse(EMPTY_YAML);
+    old_name = filename;
     filename = "unsaved";
     console.log(current_yaml);
     renderYAML(current_yaml);
@@ -122,6 +139,7 @@ function openMenu() {
     DoYaml();
     document.title = program_name + "Main";
     document.getElementById("loader").classList.remove("hidden");
+    document.getElementById("topbar").classList.add("hidden");
     document.getElementById("YAML").classList.add("hidden");
     document.getElementById("bottombar").classList.add("hidden");
 }
@@ -161,11 +179,16 @@ function uploadYAML() {
 
         reader.onload = readerEvent => {
             var content = readerEvent.target.result;
-            console.log( content);
-            current_yaml = content;
+            filename = file.name;
+            document.title = program_name + "Edit | " + filename;
+            document.getElementById("sherlock").innerHTML = "";
+            current_yaml = jsyaml.load(content);
+            renderYAML(current_yaml);
+            clearMenu();
         }
     }
     uploadfile.click();
+    console.log(uploadfile);
 }
 
 function hideFlags() {
@@ -186,6 +209,7 @@ function form2json() {
                 // If array is empty, add empty object
                 object["questions"].push({});
             }
+
             // Logic to make it actual boolean
             if(parsed_thing[2] == "is_case_sensitive")
             {
@@ -195,6 +219,8 @@ function form2json() {
                 } else {
                     object["questions"][question_no - 1][parsed_thing[2]] = false;
                 }
+            } else if (parsed_thing[2] == "number") {
+                object["questions"][question_no - 1][parsed_thing[2]] = parseInt(value);
             } else {
                 object["questions"][question_no - 1][parsed_thing[2]] = value;
             }
@@ -223,6 +249,7 @@ function setMode(input_text) {
             tbo.classList.add("m-sherlock");
             tbo.textContent="Sherlocks Mode";
             showHeaders();
+            validate = validateSherlock;
             // hideFlags();
             break;
         case "g":
@@ -231,6 +258,7 @@ function setMode(input_text) {
             tbo.textContent="Guided Mode";
             hideHeaders();
             showFlags();
+            validate = validateGuided;
             break;
         default:
             tbo.classList = [];
@@ -247,9 +275,6 @@ function toggleMode() {
     else {
         setMode("s");
     }
-}
-
-function openYAML() {
 }
 
 function saveYAML() {
@@ -293,8 +318,10 @@ function deleteQuestion(self) {
 
 function renameYAML() {
     newname = prompt("Please choose a new name");
-    document.title = program_name + "Edit | " +  newname;
-    filename = newname;
+    if(newname){
+        document.title = program_name + "Edit | " +  newname;
+        filename = newname;
+    }
 }
 
 function loadFiles() {
@@ -310,8 +337,13 @@ function showFlags() {
 
 }
 
-function openFile() {
-    //TODO
+function openFile(self) {
+    filename = self.textContent;
+    clearMenu();
+    document.title = program_name + "Edit | " + filename;
+    document.getElementById("sherlock").innerHTML = "";
+    current_yaml = jsyaml.load(atob(sessionStorage.getItem(filename)));
+    renderYAML(current_yaml);
 }
 
 function deleteFile(self) {
@@ -326,4 +358,18 @@ function deleteFile(self) {
 
 function downloadYAML() {
     console.log(jsyaml.dump(current_yaml));
+    var a = document.createElement("a");
+    a.href = "data:text/plain;charset=utf-8," + encodeURIComponent(jsyaml.dump(current_yaml));
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+function undo() {
+    if (temp_yaml = yaml_history.pop()) {
+        filename = old_name;
+        current_yaml = temp_yaml;
+        renderYAML(current_yaml);
+    }
 }

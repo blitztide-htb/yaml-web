@@ -1,9 +1,28 @@
+:root {
+    --alert: #FF3E3E;
+    --warning: #FFAF00;
+    --good: #9FEF00;
+    --darkgood: #7AB800;
+    --info: #9F00FF;
+    --darkest: #101622;
+    --darker: #151D2A;
+    --dark: #1B2637;
+    --darkish: #283952;
+    --light: #A4B1CD;
+    --lighter: #AFB9D1;
+    --lightest: #F2F4F8;
+}
+
 body {
     text-align: center;
+    background: var(--darker);
+    color: white;
+    font-family: lato;
 }
 
 #YAML {
     margin-top:20px;
+    padding-bottom: 200px;
 }
 
 #topbar {
@@ -11,6 +30,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
+  font-weight: bold;
 }
 
 .m-sherlock {
@@ -24,7 +44,7 @@ body {
 }
 
 #loader {
-    background: gray;
+    background: var(--dark);
     margin: auto;
     margin-top: 200px;
     width: 50%;
@@ -34,30 +54,62 @@ body {
 }
 
 #sherlock {
-    width: 50%;
+    width: 70%;
     margin: auto;
     display: flex;
     flex-direction: column;
+    color: var(--lightest);
 }
 
 #sherlock textarea {
     width: -moz-available;
     width: -webkit-fill-available;
     resize: vertical;
+    border: 2px solid var(--darkest);
+    border-radius: 5px;
+    background: var(--darker);
+    color: var(--lightest);
+    height: 200px;
+}
+
+#sherlock input {
+    background: var(--darker);
+    color: var(--lightest);
+    padding: 10px;
+    border: 2px solid var(--darkest);
+    border-radius: 5px;
+}
+
+#sherlock label {
+    font-weight: bold;
 }
 
 #bottombar {
-    position: sticky;
+    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    margin-top: 30px;
-    margin-bottom: 100px;
+    padding-top: 10px;
+    padding-bottom: 100px;
+    background: var(--darker);
+}
+
+button {
+    background: var(--good);
+    color: var(--darker);
+    border: none;
+    border-radius: 2px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+button:hover {
+    color: white;
 }
 
 .storagelist {
     border: black 5px solid;
-    background: white;
+    background: var(--darker);
 }
 
 .storagelist ul{
@@ -67,7 +119,7 @@ body {
 }
 
 .storagelist li:hover {
-    background: green;
+    background: var(--darkgood);
 }
 
 .storagelist .selected {
@@ -100,9 +152,51 @@ body {
     display: flex;
     flex-direction: column;
     background: gray;
-    padding: 10px;
+    padding: 0;
     border-radius: 10px;
     margin: 10px;
+    border: 3px solid var(--dark);
+}
+
+.question label {
+    text-align: left;
+    padding-left: 20px;
+}
+
+.question_body {
+    display: flex;
+    flex-direction: column;
+    background: gray;
+    padding: 0;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.question_body div {
+    padding: 10px;
+}
+
+.question_head {
+    display: block;
+    background: var(--darkest);
+    padding: 10px;
+    border-top-right-radius: 9px;
+    border-top-left-radius: 9px;
+}
+
+.question_head p {
+    float:left;
+    padding: 5px;
+    margin:0;
+}
+
+.question_head a {
+    float: right;
+    padding: 5px;
+}
+
+.header {
+    border: 3px solid var(--dark);
 }
 
 .hidden {
