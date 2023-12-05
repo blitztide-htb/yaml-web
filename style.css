@@ -122,6 +122,10 @@ button:hover {
     background: var(--darkgood);
 }
 
+.storagelist li {
+    padding: 10px;
+}
+
 .storagelist .selected {
     background: green;
 }
