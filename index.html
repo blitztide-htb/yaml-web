@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title> HTB YAML | Main </title>
+  <link rel="stylesheet" href="style.css">
+  <script src="yaml.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.js" integrity="sha512-CwxrLIN0dww6lRc/oKeZiI9oGlOob2HPMU0Yu0g+P3/G1cuTii+tt0jpyEKhilfrV7D/zmvKiVPIHUDU6xbBxg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ </head>
+ <body onload="DoYaml()">
+ <input type="file" id="yamlfile" class="hidden"></input>
+ <div id="loader">
+  <h1> HTB YAML </h1>
+  <div class="storagelist">
+  <ul id="filelist">
+  </ul>
+  </div>
+  <div class="buttinz">
+    <button onclick="uploadYAML()" width="100%">Load from File</button>
+    <button onclick="loadYAML()">Load from URL</button>
+    <button onclick="openYAML()">Open Selected</button>
+    <button onclick="newYAML()">New YAML</button>
+  </div>
+ </div>
+ <div id="topbar" class="hidden m-sherlock">
+ SHERLOCKS MODE
+ </div>
+ <div id="YAML" class="hidden">
+    <form id="sherlock" onsubmit="return false">
+    </form>
+ </div>
+ <div id="bottombar" class="hidden">
+    <button onclick="renameYAML()"> Rename </button>
+    <button onclick="addQuestion()"> Add Question </button>
+    <button class="hidden"> Add Flag </button>
+    <button onclick="toggleMode()"> Toggle Mode </button>
+    <button onclick="saveYAML()"> Save </button>
+    <button onclick="downloadYAML()"> Download </button>
+    <button onclick="clearYAML()"> Clear </button>
+    <button onclick="undo()"> Undo </button>
+    <button onclick="redo()"> Redo </button>
+    <button onclick="openMenu()"> Exit </button>
+    <button onclick="debugprint()"> DEBUG </button>
+ </div>
+ </body>
+</html>

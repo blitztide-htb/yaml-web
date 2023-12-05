@@ -1,0 +1,110 @@
+body {
+    text-align: center;
+}
+
+#YAML {
+    margin-top:20px;
+}
+
+#topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.m-sherlock {
+    background: blueviolet;
+    color: white;
+}
+
+.m-guided {
+    background: red;
+    color: white;
+}
+
+#loader {
+    background: gray;
+    margin: auto;
+    margin-top: 200px;
+    width: 50%;
+    padding: 10px 30px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+#sherlock {
+    width: 50%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#sherlock textarea {
+    width: -moz-available;
+    width: -webkit-fill-available;
+    resize: vertical;
+}
+
+#bottombar {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: 30px;
+    margin-bottom: 100px;
+}
+
+.storagelist {
+    border: black 5px solid;
+    background: white;
+}
+
+.storagelist ul{
+    list-style: none;
+    margin: 0;
+    padding:0;
+}
+
+.storagelist li:hover {
+    background: green;
+}
+
+.storagelist .selected {
+    background: green;
+}
+
+.buttinz {
+    margin: 10px 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.buttinz button{
+    width: fit-content;
+    white-space: nowrap;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    background: gray;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.question {
+    display: flex;
+    flex-direction: column;
+    background: gray;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.hidden {
+    display: none;
+}
