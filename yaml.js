@@ -175,7 +175,6 @@ function loadYAML() {
     Http.send();
 
     Http.onreadystatechange = (e) => {
-        console.log(Http.responseText)
         filename = "web.yaml";
         clearMenu();
         document.title = program_name + "Edit | New File";
