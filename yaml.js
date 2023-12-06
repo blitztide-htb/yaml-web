@@ -98,6 +98,7 @@ function renderYAML(input_object) {
 function generateQuestion(input_object) {
     question_number = input_object["number"] ? input_object["number"] : max_question;
     node = document.createElement("div");
+    node.draggable = true;
     node.innerHTML = `
         <div class="question_head">
             <p>${question_number}</p><a onclick="deleteQuestion(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -107,11 +108,11 @@ function generateQuestion(input_object) {
         <div class="question_body">
         <input name = "questions[${question_number}][number]" type="hidden" value="${question_number}"></input>
         <label>Title:</label>
-        <input name = "questions[${question_number}][title]" value="${input_object["title"] ? input_object["title"] : ""}" onChange="updateYAML()"></input>
+        <input placeholder="Title of question" name = "questions[${question_number}][title]" value="${input_object["title"] ? input_object["title"] : ""}" onChange="updateYAML()"></input>
         <label>Flag:</label>
-        <input name = "questions[${question_number}][flag]" value="${input_object["flag"] ? input_object["flag"] : ""}" onChange="updateYAML()"></input>
+        <input placeholder="Answer of the question" name = "questions[${question_number}][flag]" value="${input_object["flag"] ? input_object["flag"] : ""}" onChange="updateYAML()"></input>
         <label>Placeholder:</label>
-        <input name = "questions[${question_number}][placeholder]" value="${input_object["placeholder"] ? input_object["placeholder"] : ""}" onChange="updateYAML()"></input>
+        <input placeholder="Placeholder text for question" name = "questions[${question_number}][placeholder]" value="${input_object["placeholder"] ? input_object["placeholder"] : ""}" onChange="updateYAML()"></input>
         <div>
             <label>Case Sensitive:</label>
             <input name="questions[${question_number}][is_case_sensitive]" type="checkbox" value="true" onChange="updateYAML()"></input>
