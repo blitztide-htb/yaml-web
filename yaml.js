@@ -169,8 +169,20 @@ function newYAML() {
 }
 
 function loadYAML() {
-    URL = prompt();
-    console.log(URL);
+    URL = prompt("Please provide YAML URL");
+    const Http = new XMLHttpRequest();
+    Http.open("GET", URL);
+    Http.send();
+
+    Http.onreadystatechange = (e) => {
+        console.log(Http.responseText)
+        filename = "web.yaml";
+        clearMenu();
+        document.title = program_name + "Edit | New File";
+        document.getElementById("sherlock").innerHTML = "";
+        current_yaml = jsyaml.load(Http.responseText);
+        renderYAML(current_yaml);
+    }
 }
 
 function uploadYAML() {
