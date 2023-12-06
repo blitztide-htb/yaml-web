@@ -78,6 +78,8 @@ body {
     padding: 10px;
     border: 2px solid var(--darkest);
     border-radius: 5px;
+    width: -webkit-fill-available;
+    width: -moz-available;
 }
 
 #sherlock label {
@@ -176,10 +178,6 @@ button:hover {
     margin: 10px;
 }
 
-.question_body div {
-    padding: 10px;
-}
-
 .question_head {
     display: block;
     background: var(--darkest);
@@ -190,20 +188,24 @@ button:hover {
 
 .question_head p {
     float:left;
-    padding: 5px;
+    padding: 20px;
     margin:0;
 }
 
 .question_head a {
     float: right;
-    padding: 5px;
+    padding: 20px;
 }
 
 .question_head a:hover {
-    float: right;
-    padding: 5px;
     font-weight: bold;
     color: var(--alert);
+}
+
+.question_footer {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
 }
 
 .header {
@@ -212,4 +214,8 @@ button:hover {
 
 .hidden {
     display: none;
+}
+
+.dragging {
+    opacity: 0.5;
 }

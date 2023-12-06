@@ -40,7 +40,6 @@ function DoYaml() {
         file_container.appendChild(node);
     }
     files.forEach((item) => {
-        console.log(item);
         node = document.createElement("li");
         node.innerHTML = `
         <div class="fileitem">
@@ -56,7 +55,6 @@ function DoYaml() {
 
 function renderYAML(input_object) {
     max_question = 1;
-    console.log(input_object);
     form = document.getElementById("sherlock");
     form.innerHTML = "";
     // Add Headings
@@ -66,21 +64,22 @@ function renderYAML(input_object) {
         node = document.createElement("label");
         node.textContent="Scenario"
         node.classList.add("scenario");
-        header_div.appendChild(node);
-        node = document.createElement("textarea");
-        node.name = "scenario";
-        node.onchange = updateYAML;
-        node.value = input_object["scenario"];
+        sub_node = document.createElement("textarea");
+        sub_node.name = "scenario";
+        sub_node.onchange = updateYAML;
+        sub_node.value = input_object["scenario"];
+        node.appendChild(sub_node);
         header_div.appendChild(node);
     }
     if (input_object["description"]) {
         node = document.createElement("label");
         node.textContent="Description"
         header_div.appendChild(node);
-        node = document.createElement("textarea");
-        node.name = "description";
-        node.value = input_object["description"];
-        node.onchange = updateYAML;
+        sub_node = document.createElement("textarea");
+        sub_node.name = "description";
+        sub_node.value = input_object["description"];
+        sub_node.onchange = updateYAML;
+        node.appendChild(sub_node);
         header_div.appendChild(node);
     }
     form.appendChild(header_div);
@@ -95,10 +94,73 @@ function renderYAML(input_object) {
     setMode(content_mode);
 }
 
+function moveDraggable(item, nextitem) {
+    draggable_container = document.getElementById("sherlock");
+    if (nextitem != null) {
+        draggable_container.insertBefore(item,nextitem);
+    } else {
+        draggable_container.appendChild(item);
+    }
+
+}
+
+function dragScroll(ev){
+    // Get window height
+    block_percentage = 10;
+    speed_limiter = 20;
+    center = window.innerHeight / 2;
+    block_height = window.innerHeight/block_percentage/2;
+
+    // Block out center of the screen by block_percentage
+    diff = Math.abs(ev.clientY - center) - block_height > 0 ? (ev.clientY - center)/speed_limiter : 0;
+
+    window.scrollBy({
+        top: diff,
+        left: 0,
+        behaviour: "smooth",
+    });
+
+}
+
+function yamlDragOver(ev) {
+    ev.preventDefault();
+    const afterElement = getNextQuestion(document.getElementById("sherlock"), ev.clientY);
+    const draggable = document.querySelector('.dragging');
+    moveDraggable(draggable,afterElement);
+}
+
+function yamlDragStart() {
+    this.classList.add("dragging");
+}
+
+function yamlDragEnd(ev) {
+    this.classList.remove("dragging");
+    // Update ordering
+    renumberQuestions();
+}
+
+function getNextQuestion(object, y) {
+    const draggableElements = [...object.querySelectorAll('.draggable:not(.dragging)')]
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect()
+        const offset = y - box.top - box.height / 2
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child }
+        } else {
+            return closest
+        }
+  }, { offset: Number.NEGATIVE_INFINITY }).element
+}
+
 function generateQuestion(input_object) {
     question_number = input_object["number"] ? input_object["number"] : max_question;
     node = document.createElement("div");
     node.draggable = true;
+    node.ondragstart = yamlDragStart;
+    node.ondragend = yamlDragEnd;
+    node.ondragover = yamlDragOver;
+    node.ondrag = dragScroll;
     node.innerHTML = `
         <div class="question_head">
             <p>${question_number}</p><a onclick="deleteQuestion(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -106,20 +168,32 @@ function generateQuestion(input_object) {
 </svg></a>
         </div>
         <div class="question_body">
-        <input name = "questions[${question_number}][number]" type="hidden" value="${question_number}"></input>
-        <label>Title:</label>
-        <input placeholder="Title of question" name = "questions[${question_number}][title]" value="${input_object["title"] ? input_object["title"] : ""}" onChange="updateYAML()"></input>
-        <label>Flag:</label>
-        <input placeholder="Answer of the question" name = "questions[${question_number}][flag]" value="${input_object["flag"] ? input_object["flag"] : ""}" onChange="updateYAML()"></input>
-        <label>Placeholder:</label>
-        <input placeholder="Placeholder text for question" name = "questions[${question_number}][placeholder]" value="${input_object["placeholder"] ? input_object["placeholder"] : ""}" onChange="updateYAML()"></input>
-        <div>
-            <label>Case Sensitive:</label>
-            <input name="questions[${question_number}][is_case_sensitive]" type="checkbox" value="true" onChange="updateYAML()"></input>
-            <label>Depends On:</label>
-            <input name="questions[${question_number}][depends_on]" onChange="updateYAML()"></input>
-        </div></div>`;
+            <input name = "questions[${question_number}][number]" type="hidden" value="${question_number}"></input>
+            <label>
+                Title:
+                <input placeholder="Title of question" name = "questions[${question_number}][title]" value="${input_object["title"] ? input_object["title"] : ""}" onChange="updateYAML()"></input>
+            </label>
+            <label>
+                    Flag:
+                    <input placeholder="Answer of the question" name = "questions[${question_number}][flag]" value="${input_object["flag"] ? input_object["flag"] : ""}" onChange="updateYAML()"></input>
+            </label>
+            <label>
+                Placeholder:
+                <input placeholder="Placeholder text for question" name = "questions[${question_number}][placeholder]" value="${input_object["placeholder"] ? input_object["placeholder"] : ""}" onChange="updateYAML()"></input>
+            </label>
+            <div class="question_footer">
+                <label>
+                    Case Sensitive:
+                    <input name="questions[${question_number}][is_case_sensitive]" type="checkbox" value="true" onChange="updateYAML()"></input>
+                </label>
+                <label>
+                    Depends On:
+                    <input name="questions[${question_number}][depends_on]" onChange="updateYAML()"></input>
+                </label>
+            </div>
+        </div>`;
     node.classList.add("question");
+    node.classList.add("draggable");
     return node;
 }
 
@@ -129,7 +203,6 @@ function clearYAML() {
     current_yaml = JSON.parse(EMPTY_YAML);
     old_name = filename;
     filename = "unsaved";
-    console.log(current_yaml);
     renderYAML(current_yaml);
 }
 
@@ -204,7 +277,6 @@ function uploadYAML() {
         }
     }
     uploadfile.click();
-    console.log(uploadfile);
 }
 
 function hideFlags() {
@@ -212,7 +284,6 @@ function hideFlags() {
 }
 
 function form2json() {
-    console.log("In Form2json");
     formYAML = new FormData(document.getElementById("sherlock"));
     object = { "questions": []};
     formYAML.forEach(function(value,key){
@@ -248,8 +319,6 @@ function form2json() {
 }
 
 function updateYAML() {
-
-    console.log("update called");
     object = form2json();
     json = JSON.stringify(object);
     current_yaml = object;
@@ -290,6 +359,15 @@ function toggleMode() {
     }
     else {
         setMode("s");
+    }
+}
+
+function renumberQuestions() {
+    container = document.getElementById("sherlock").getElementsByClassName("question");
+    questions = container.length;
+    for(i = 0; i < questions; i++)
+    {
+        container[i].children[0].children[0].textContent = i + 1;
     }
 }
 
@@ -373,7 +451,6 @@ function deleteFile(self) {
 }
 
 function downloadYAML() {
-    console.log(jsyaml.dump(current_yaml));
     var a = document.createElement("a");
     a.href = "data:text/plain;charset=utf-8," + encodeURIComponent(jsyaml.dump(current_yaml));
     a.download = filename;
