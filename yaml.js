@@ -183,6 +183,13 @@ function generateQuestion(input_object) {
             </label>
             <div class="question_footer">
                 <label>
+                    Question Type:
+                    <select name="questions[${question_number}][type]">
+                        <option value="free"> Free </option>
+                        <option value="sequential"> sequential </option>
+                    </select>
+                </label>
+                <label>
                     Case Sensitive:
                     <input name="questions[${question_number}][is_case_sensitive]" type="checkbox" value="true" onChange="updateYAML()"></input>
                 </label>
