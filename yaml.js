@@ -181,6 +181,10 @@ function generateQuestion(input_object) {
                 Placeholder:
                 <input placeholder="Placeholder text for question" name = "questions[${question_number}][placeholder]" value="${input_object["placeholder"] ? input_object["placeholder"] : ""}" onChange="updateYAML()"></input>
             </label>
+            <label>
+                Hint:
+                <input placeholder="Hint for the question" name = "questions[${question_number}][hint]" value="${input_object["hint"] ? input_object["hint"] : ""}" onChange"updateYAML()"></input>
+            </label>
             <div class="question_footer">
                 <label>
                     Question Type:
@@ -473,3 +477,4 @@ function undo() {
         renderYAML(current_yaml);
     }
 }
+
