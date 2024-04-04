@@ -308,7 +308,8 @@ function form2json() {
                 object["questions"].push({});
             }
 
-            // Logic to make it actual boolean
+            // Logic for specific keys in a question
+            // logic for case-sensitive
             if(parsed_thing[2] == "is_case_sensitive")
             {
                 if(value == "true")
@@ -317,8 +318,19 @@ function form2json() {
                 } else {
                     object["questions"][question_no - 1][parsed_thing[2]] = false;
                 }
+                // Logic for setting number as a real integer
             } else if (parsed_thing[2] == "number") {
                 object["questions"][question_no - 1][parsed_thing[2]] = parseInt(value);
+                // Logic for setting requires and depends_on
+            } else if (parsed_thing[2] == "depends_on") {
+                object["questions"][question_no -1][parsed_thing[2]] = value;
+                if (value === "")
+                {
+                    object["questions"][question_no -1]["requires"] = null;
+                } else {
+                    object["questions"][question_no -1]["requires"] = value;
+                }
+
             } else {
                 object["questions"][question_no - 1][parsed_thing[2]] = value;
             }
