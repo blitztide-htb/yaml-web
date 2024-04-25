@@ -65,6 +65,7 @@ function renderYAML(input_object) {
         node.textContent="Scenario"
         node.classList.add("scenario");
         sub_node = document.createElement("textarea");
+        sub_node.classList.add("sherlock-textarea");
         sub_node.name = "scenario";
         sub_node.onchange = updateYAML;
         sub_node.value = input_object["scenario"];
@@ -73,10 +74,11 @@ function renderYAML(input_object) {
     }
     if (input_object["description"]) {
         node = document.createElement("label");
-        node.textContent="Description"
+        node.textContent="Description";
         header_div.appendChild(node);
         sub_node = document.createElement("textarea");
         sub_node.name = "description";
+        sub_node.classList.add("sherlock-textarea")
         sub_node.value = input_object["description"];
         sub_node.onchange = updateYAML;
         node.appendChild(sub_node);
@@ -171,7 +173,7 @@ function generateQuestion(input_object) {
             <input name = "questions[${question_number}][number]" type="hidden" value="${question_number}"></input>
             <label>
                 Title:
-                <input placeholder="Title of question" name = "questions[${question_number}][title]" value="${input_object["title"] ? input_object["title"] : ""}" onChange="updateYAML()"></input>
+                <textarea class="grammarly-text" placeholder="Title of question" name = "questions[${question_number}][title]" value="${input_object["title"] ? input_object["title"] : ""}" onChange="updateYAML()"></textarea>
             </label>
             <label>
                     Flag:
@@ -179,11 +181,11 @@ function generateQuestion(input_object) {
             </label>
             <label>
                 Placeholder:
-                <input placeholder="Placeholder text for question" name = "questions[${question_number}][placeholder]" value="${input_object["placeholder"] ? input_object["placeholder"] : ""}" onChange="updateYAML()"></input>
+                <textarea class="grammarly-text" placeholder="Placeholder text for question" name = "questions[${question_number}][placeholder]" value="${input_object["placeholder"] ? input_object["placeholder"] : ""}" onChange="updateYAML()"></textarea>
             </label>
             <label>
                 Hint:
-                <input placeholder="Hint for the question" name = "questions[${question_number}][hint]" value="${input_object["hint"] ? input_object["hint"] : ""}" onChange"updateYAML()"></input>
+                <textarea class="grammarly-text" placeholder="Hint for the question" name = "questions[${question_number}][hint]" value="${input_object["hint"] ? input_object["hint"] : ""}" onChange"updateYAML()"></textarea>
             </label>
             <div class="question_footer">
                 <label>

@@ -62,7 +62,7 @@ body {
     color: var(--lightest);
 }
 
-#sherlock textarea {
+.sherlock-textarea {
     width: -moz-available;
     width: -webkit-fill-available;
     resize: vertical;
@@ -227,4 +227,15 @@ button:hover {
 
 .dragging {
     opacity: 0.5;
+}
+
+.grammarly-text {
+    width: -moz-available;
+    width: -webkit-fill-available;
+    resize: vertical;
+    background: var(--darker);
+    border: 2px solid var(--darkest);
+    color: var(--lightest);
+    height: 50px;
+    padding: 10px;
 }
