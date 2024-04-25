@@ -403,14 +403,14 @@ function saveYAML() {
     }
     object = form2json();
     // Convert to YAML
-    sessionStorage.setItem(filename,btoa(jsyaml.dump(object)));
+    localStorage.setItem(filename,btoa(jsyaml.dump(object)));
     // Check if file exists in array
     file_index = files.indexOf(filename);
     if(file_index == -1){
         files.push(filename);
-        sessionStorage.setItem("files",JSON.stringify(files));
+        localStorage.setItem("files",JSON.stringify(files));
     }
-    sessionStorage.setItem("files",JSON.stringify(files));
+    localStorage.setItem("files",JSON.stringify(files));
 }
 
 function addQuestion() {
@@ -444,11 +444,11 @@ function renameYAML() {
 }
 
 function loadFiles() {
-    saved_files = sessionStorage.getItem("files");
+    saved_files = localStorage.getItem("files");
     if (!saved_files) {
         files = [];
     } else {
-        files = JSON.parse(sessionStorage.getItem("files"));
+        files = JSON.parse(localStorage.getItem("files"));
     }
 }
 
@@ -461,7 +461,7 @@ function openFile(self) {
     clearMenu();
     document.title = program_name + "Edit | " + filename;
     document.getElementById("sherlock").innerHTML = "";
-    current_yaml = jsyaml.load(atob(sessionStorage.getItem(filename)));
+    current_yaml = jsyaml.load(atob(localStorage.getItem(filename)));
     renderYAML(current_yaml);
 }
 
@@ -470,8 +470,8 @@ function deleteFile(self) {
     if(confirm(`Are you sure you want to delete ${delname}`));
     fileindex = files.indexOf(delname);
     files.splice(fileindex,1);
-    sessionStorage.setItem("files",JSON.stringify(files));
-    sessionStorage.removeItem(delname);
+    localStorage.setItem("files",JSON.stringify(files));
+    localStorage.removeItem(delname);
     DoYaml();
 }
 
