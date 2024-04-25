@@ -12,7 +12,77 @@ var validate = validateSherlock; // Set to sherlock by default
 
 function validateSherlock() {
     console.log("Validating Sherlock");
+    errors = 0;
+    errors += checkDependsOn(current_yaml);
+    errors += checkFlags(current_yaml);
+    errors += checkDates(current_yaml);
+    errors += ensureAllFields(current_yaml);
+    if (errors == 0) {
+        addError("Sherlock passed validation", "message-success");
+    }
+}
 
+function checkDependsOn(test_yaml) {
+    has_error = 0;
+    max_question = test_yaml["questions"].length;
+    test_yaml["questions"].forEach((element) => {
+        if (element["depends_on"] < 0 ) {
+            error_message = `Error: question ${element["number"]} has an incorrect depends_on value. Should be above 0`;
+            addError( error_message);
+            has_error = 1;
+        } else if (element["depends_on"] > max_question) {
+            error_message = `Error: question ${element["number"]} has an incorrect depends_on value. Should be within the max_questions`;
+            addError( error_message);
+            has_error = 1;
+        }
+    });
+    return has_error;
+}
+
+function ensureAllFields(test_yaml) {
+    has_error = 0;
+    if (test_yaml["scenario"] == "") {
+        addError("No Scenario");
+        has_error = 1;
+    }
+    if (test_yaml["description"] == "") {
+        addError("No Description");
+        has_error = 1;
+    }
+    test_yaml["questions"].forEach((element) => {
+        if (element["flag"] == ""){
+            addError("Empty flag");
+            has_error = 1;
+        }
+        if (element["title"] == "") {
+            addError("Empty title");
+            has_error = 1;
+        }
+    });
+    return has_error;
+}
+
+function checkFlags(test_yaml) {
+    has_error = 0;
+    test_yaml["questions"].forEach((element) => {
+        if (element["flag"] == "" ) {
+            error_message = `Error: question ${element["number"]} has not got a flag`;
+            addError( error_message);
+            has_error = 1;
+        }
+    });
+    return has_error;
+}
+
+function checkDates(test_yaml) {
+    has_error = 0;
+    test_yaml["questions"].forEach((element) => {
+        if (element["flag"] instanceof Date) {
+            addError(`Error: ${element["number"]} has a flag that is of type Date`);
+            has_error = 1;
+        }
+    })
+    return has_error;
 }
 
 function validateGuided() {
@@ -20,6 +90,27 @@ function validateGuided() {
 
 }
 
+// Optional extra parameter that chooses the message-type via an extra class
+function addError(error) {
+    if (arguments.length == 2)
+    {
+        extra_class = arguments[1];
+    } else {
+        extra_class = "message-error";
+    }
+    message_container = document.getElementById("message-holder");
+    node = document.createElement("div");
+    node.classList.add("message");
+    node.classList.add(extra_class);
+    node.innerHTML = `<div class="message-center">${error}</div><div class="message-right"><a onclick="closeMessage(this)">X</a></div>`;
+    message_container.appendChild(node);
+}
+
+function closeMessage(e) {
+    console.log(e);
+    message = e.parentElement.parentElement;
+    message.parentElement.removeChild(message);
+}
 
 function debugprint() {
     form = document.getElementById("sherlock");
@@ -156,6 +247,7 @@ function getNextQuestion(object, y) {
 }
 
 function generateQuestion(input_object) {
+    console.log(input_object);
     question_number = input_object["number"] ? input_object["number"] : max_question;
     node = document.createElement("div");
     node.draggable = true;
@@ -173,7 +265,7 @@ function generateQuestion(input_object) {
             <input name = "questions[${question_number}][number]" type="hidden" value="${question_number}"></input>
             <label>
                 Title:
-                <textarea class="grammarly-text" placeholder="Title of question" name = "questions[${question_number}][title]" value="${input_object["title"] ? input_object["title"] : ""}" onChange="updateYAML()"></textarea>
+                <textarea class="grammarly-text" placeholder="Title of question" name = "questions[${question_number}][title]" value="" onChange="updateYAML()">${input_object["title"] ? input_object["title"] : ""}</textarea>
             </label>
             <label>
                     Flag:
@@ -181,7 +273,7 @@ function generateQuestion(input_object) {
             </label>
             <label>
                 Placeholder:
-                <textarea class="grammarly-text" placeholder="Placeholder text for question" name = "questions[${question_number}][placeholder]" value="${input_object["placeholder"] ? input_object["placeholder"] : ""}" onChange="updateYAML()"></textarea>
+                <textarea class="grammarly-text" placeholder="Placeholder text for question" name = "questions[${question_number}][placeholder]" value="" onChange="updateYAML()">${input_object["placeholder"] ? input_object["placeholder"] : ""}</textarea>
             </label>
             <label>
                 Hint:
@@ -284,7 +376,14 @@ function uploadYAML() {
             filename = file.name;
             document.title = program_name + "Edit | " + filename;
             document.getElementById("sherlock").innerHTML = "";
-            current_yaml = jsyaml.load(content);
+            try {
+                current_yaml = jsyaml.load(content);
+            } catch (err) {
+                if ( err instanceof jsyaml.YAMLException) {
+                    addError(err);
+                    return;
+                }
+            }
             renderYAML(current_yaml);
             clearMenu();
         }
